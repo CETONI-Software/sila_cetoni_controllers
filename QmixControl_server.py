@@ -36,13 +36,13 @@ import os
 from sila2lib.sila_server import SiLA2Server
 
 # Import gRPC libraries of features
-from .ControlLoopService.gRPC import ControlLoopService_pb2
-from .ControlLoopService.gRPC import ControlLoopService_pb2_grpc
+from impl.de.cetoni.controllers.ControlLoopService.gRPC import ControlLoopService_pb2
+from impl.de.cetoni.controllers.ControlLoopService.gRPC import ControlLoopService_pb2_grpc
 # import default arguments for this feature
-from .ControlLoopService.ControlLoopService_default_arguments import default_dict as ControlLoopService_default_dict
+from impl.de.cetoni.controllers.ControlLoopService.ControlLoopService_default_arguments import default_dict as ControlLoopService_default_dict
 
 # Import the servicer modules for each feature
-from .ControlLoopService.ControlLoopService_servicer import ControlLoopService
+from impl.de.cetoni.controllers.ControlLoopService.ControlLoopService_servicer import ControlLoopService
 
 from local_ip import LOCAL_IP
 
@@ -68,7 +68,8 @@ class QmixControlServer(SiLA2Server):
             )
         )
 
-        meta_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'meta')
+        meta_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..',
+                                 'features', 'de', 'cetoni', 'controllers')
 
         # registering features
         #  Register ControlLoopService

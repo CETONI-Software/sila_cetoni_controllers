@@ -47,10 +47,10 @@ from sila2lib.error_handling import client_err
 
 # import feature gRPC modules
 # Import gRPC libraries of features
-from .ControlLoopService.gRPC import ControlLoopService_pb2
-from .ControlLoopService.gRPC import ControlLoopService_pb2_grpc
+from impl.de.cetoni.controllers.ControlLoopService.gRPC import ControlLoopService_pb2
+from impl.de.cetoni.controllers.ControlLoopService.gRPC import ControlLoopService_pb2_grpc
 # import default arguments for this feature
-from .ControlLoopService.ControlLoopService_default_arguments import default_dict as ControlLoopService_default_dict
+from impl.de.cetoni.controllers.ControlLoopService.ControlLoopService_default_arguments import default_dict as ControlLoopService_default_dict
 
 
 # noinspection PyPep8Naming, PyUnusedLocal
