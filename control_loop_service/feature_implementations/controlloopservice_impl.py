@@ -85,6 +85,8 @@ class ControlLoopServiceImpl(ControlLoopServiceBase):
     def SetPointValue_on_subscription(self, *, metadata: Dict[FullyQualifiedIdentifier, Any]) -> Optional[Queue[float]]:
         channel_index = metadata[self.__channel_index_identifier]
         try:
+            if channel_index < 0:
+                raise IndexError
             return self.__set_point_queues[channel_index]
         except IndexError:
             raise InvalidChannelIndex(
