@@ -21,6 +21,8 @@ from ..generated.controlloopservice import (
     WriteSetPoint_Responses,
 )
 
+logger = logging.getLogger(__name__)
+
 
 class ControlLoopServiceImpl(ControlLoopServiceBase):
     __controller_channels: List[ControllerChannel]
@@ -116,12 +118,12 @@ class ControlLoopServiceImpl(ControlLoopServiceBase):
         self, SetPointValue: float, *, metadata: Dict[FullyQualifiedIdentifier, Any]
     ) -> WriteSetPoint_Responses:
         channel_identifier: int = metadata.pop(self.__channel_index_identifier, 0)
-        logging.debug(f"channel id: {channel_identifier}")
+        logger.debug(f"channel id: {channel_identifier}")
         self.__controller_channel_for_index(channel_identifier).write_setpoint(SetPointValue)
 
     def StopControlLoop(self, *, metadata: Dict[FullyQualifiedIdentifier, Any]) -> StopControlLoop_Responses:
         channel_identifier: int = metadata.pop(self.__channel_index_identifier, 0)
-        logging.debug(f"channel id: {channel_identifier}")
+        logger.debug(f"channel id: {channel_identifier}")
         self.__controller_channel_for_index(channel_identifier).enable_control_loop(False)
 
     def RunControlLoop(
@@ -131,7 +133,7 @@ class ControlLoopServiceImpl(ControlLoopServiceBase):
         instance: ObservableCommandInstance,
     ) -> RunControlLoop_Responses:
         channel_identifier: int = metadata.pop(self.__channel_index_identifier, 0)
-        logging.debug(f"channel id: {channel_identifier}")
+        logger.debug(f"channel id: {channel_identifier}")
         self.__controller_channel_for_index(channel_identifier).enable_control_loop(True)
 
     def get_calls_affected_by_ChannelIndex(
