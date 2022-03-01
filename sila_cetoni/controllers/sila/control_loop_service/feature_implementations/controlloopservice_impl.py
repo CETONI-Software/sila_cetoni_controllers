@@ -83,7 +83,7 @@ class ControlLoopServiceImpl(ControlLoopServiceBase):
         return len(self.__controller_channels)
 
     def SetPointValue_on_subscription(self, *, metadata: Dict[FullyQualifiedIdentifier, Any]) -> Optional[Queue[float]]:
-        channel_index = metadata[self.__channel_index_identifier]
+        channel_index = metadata.pop(self.__channel_index_identifier, 0)
         try:
             if channel_index < 0:
                 raise IndexError
@@ -96,7 +96,7 @@ class ControlLoopServiceImpl(ControlLoopServiceBase):
     def ControllerValue_on_subscription(
         self, *, metadata: Dict[FullyQualifiedIdentifier, Any]
     ) -> Optional[Queue[float]]:
-        channel_index = metadata[self.__channel_index_identifier]
+        channel_index = metadata.pop(self.__channel_index_identifier, 0)
         try:
             return self.__controller_value_queues[channel_index]
         except IndexError:
@@ -115,12 +115,12 @@ class ControlLoopServiceImpl(ControlLoopServiceBase):
     def WriteSetPoint(
         self, SetPointValue: float, *, metadata: Dict[FullyQualifiedIdentifier, Any]
     ) -> WriteSetPoint_Responses:
-        channel_identifier: int = metadata.pop(self.__channel_index_identifier)
+        channel_identifier: int = metadata.pop(self.__channel_index_identifier, 0)
         logging.debug(f"channel id: {channel_identifier}")
         self.__controller_channel_for_index(channel_identifier).write_setpoint(SetPointValue)
 
     def StopControlLoop(self, *, metadata: Dict[FullyQualifiedIdentifier, Any]) -> StopControlLoop_Responses:
-        channel_identifier: int = metadata.pop(self.__channel_index_identifier)
+        channel_identifier: int = metadata.pop(self.__channel_index_identifier, 0)
         logging.debug(f"channel id: {channel_identifier}")
         self.__controller_channel_for_index(channel_identifier).enable_control_loop(False)
 
@@ -130,20 +130,23 @@ class ControlLoopServiceImpl(ControlLoopServiceBase):
         metadata: Dict[FullyQualifiedIdentifier, Any],
         instance: ObservableCommandInstance,
     ) -> RunControlLoop_Responses:
-        channel_identifier: int = metadata.pop(self.__channel_index_identifier)
+        channel_identifier: int = metadata.pop(self.__channel_index_identifier, 0)
         logging.debug(f"channel id: {channel_identifier}")
         self.__controller_channel_for_index(channel_identifier).enable_control_loop(True)
 
     def get_calls_affected_by_ChannelIndex(
         self,
     ) -> List[Union[Feature, Command, Property, FullyQualifiedIdentifier]]:
-        return [
-            ControlLoopServiceFeature["WriteSetPoint"].fully_qualified_identifier,
-            ControlLoopServiceFeature["RunControlLoop"].fully_qualified_identifier,
-            ControlLoopServiceFeature["StopControlLoop"].fully_qualified_identifier,
-            ControlLoopServiceFeature["ControllerValue"].fully_qualified_identifier,
-            ControlLoopServiceFeature["SetPointValue"].fully_qualified_identifier,
-        ]
+        if len(self.__controller_channels) == 1:
+            return []
+        else:
+            return [
+                ControlLoopServiceFeature["WriteSetPoint"].fully_qualified_identifier,
+                ControlLoopServiceFeature["RunControlLoop"].fully_qualified_identifier,
+                ControlLoopServiceFeature["StopControlLoop"].fully_qualified_identifier,
+                ControlLoopServiceFeature["ControllerValue"].fully_qualified_identifier,
+                ControlLoopServiceFeature["SetPointValue"].fully_qualified_identifier,
+            ]
 
     def stop(self) -> None:
         self.__stop_event.set()
