@@ -43,7 +43,7 @@
                         <Unit>
                             <Label>°C</Label>
                             <Factor>1</Factor>
-                            <Offset>237.15</Offset>
+                            <Offset>273.15</Offset>
                             <UnitComponent>
                                 <SIUnit>Kelvin</SIUnit>
                                 <Exponent>1</Exponent>
@@ -91,7 +91,7 @@
                     <Unit>
                         <Label>°C</Label>
                         <Factor>1</Factor>
-                        <Offset>237.15</Offset>
+                        <Offset>273.15</Offset>
                         <UnitComponent>
                             <SIUnit>Kelvin</SIUnit>
                             <Exponent>1</Exponent>
@@ -115,7 +115,7 @@
                     <Unit>
                         <Label>°C</Label>
                         <Factor>1</Factor>
-                        <Offset>237.15</Offset>
+                        <Offset>273.15</Offset>
                         <UnitComponent>
                             <SIUnit>Kelvin</SIUnit>
                             <Exponent>1</Exponent>
