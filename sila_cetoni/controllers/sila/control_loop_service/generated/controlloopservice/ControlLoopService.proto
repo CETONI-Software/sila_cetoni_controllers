@@ -1,0 +1,93 @@
+syntax = "proto3";
+
+import "SiLAFramework.proto";
+
+package sila2.de.cetoni.controllers.controlloopservice.v1;
+
+/* Allows to control a Qmix Device with a Control Loop */
+service ControlLoopService {
+  /* Write a Set Point value to the Controller Device */
+  rpc WriteSetPoint (sila2.de.cetoni.controllers.controlloopservice.v1.WriteSetPoint_Parameters) returns (sila2.de.cetoni.controllers.controlloopservice.v1.WriteSetPoint_Responses) {}
+  /* Run the Control Loop */
+  rpc RunControlLoop (sila2.de.cetoni.controllers.controlloopservice.v1.RunControlLoop_Parameters) returns (sila2.org.silastandard.CommandConfirmation) {}
+  /* Monitor the state of RunControlLoop */
+  rpc RunControlLoop_Info (sila2.org.silastandard.CommandExecutionUUID) returns (stream sila2.org.silastandard.ExecutionInfo) {}
+  /* Retrieve result of RunControlLoop */
+  rpc RunControlLoop_Result(sila2.org.silastandard.CommandExecutionUUID) returns (sila2.de.cetoni.controllers.controlloopservice.v1.RunControlLoop_Responses) {}
+  /* Stops the Control Loop (has no effect, if no Loop is currently running) */
+  rpc StopControlLoop (sila2.de.cetoni.controllers.controlloopservice.v1.StopControlLoop_Parameters) returns (sila2.de.cetoni.controllers.controlloopservice.v1.StopControlLoop_Responses) {}
+  /* The number of controller channels. */
+  rpc Get_NumberOfChannels (sila2.de.cetoni.controllers.controlloopservice.v1.Get_NumberOfChannels_Parameters) returns (sila2.de.cetoni.controllers.controlloopservice.v1.Get_NumberOfChannels_Responses) {}
+  /* The actual value from the Device */
+  rpc Subscribe_ControllerValue (sila2.de.cetoni.controllers.controlloopservice.v1.Subscribe_ControllerValue_Parameters) returns (stream sila2.de.cetoni.controllers.controlloopservice.v1.Subscribe_ControllerValue_Responses) {}
+  /* The current SetPoint value of the Device */
+  rpc Subscribe_SetPointValue (sila2.de.cetoni.controllers.controlloopservice.v1.Subscribe_SetPointValue_Parameters) returns (stream sila2.de.cetoni.controllers.controlloopservice.v1.Subscribe_SetPointValue_Responses) {}
+  /* Get fully qualified identifiers of all features, commands and properties affected by ChannelIndex */
+  rpc Get_FCPAffectedByMetadata_ChannelIndex (sila2.de.cetoni.controllers.controlloopservice.v1.Get_FCPAffectedByMetadata_ChannelIndex_Parameters) returns (sila2.de.cetoni.controllers.controlloopservice.v1.Get_FCPAffectedByMetadata_ChannelIndex_Responses) {}
+}
+
+/* Parameters for WriteSetPoint */
+message WriteSetPoint_Parameters {
+  sila2.org.silastandard.Real SetPointValue = 1;  /* The Set Point value to write */
+}
+
+/* Responses of WriteSetPoint */
+message WriteSetPoint_Responses {
+}
+
+/* Parameters for RunControlLoop */
+message RunControlLoop_Parameters {
+}
+
+/* Responses of RunControlLoop */
+message RunControlLoop_Responses {
+}
+
+/* Parameters for StopControlLoop */
+message StopControlLoop_Parameters {
+}
+
+/* Responses of StopControlLoop */
+message StopControlLoop_Responses {
+}
+
+/* Parameters for NumberOfChannels */
+message Get_NumberOfChannels_Parameters {
+}
+
+/* Responses of NumberOfChannels */
+message Get_NumberOfChannels_Responses {
+  sila2.org.silastandard.Integer NumberOfChannels = 1;  /* The number of controller channels. */
+}
+
+/* Parameters for ControllerValue */
+message Subscribe_ControllerValue_Parameters {
+}
+
+/* Responses of ControllerValue */
+message Subscribe_ControllerValue_Responses {
+  sila2.org.silastandard.Real ControllerValue = 1;  /* The actual value from the Device */
+}
+
+/* Parameters for SetPointValue */
+message Subscribe_SetPointValue_Parameters {
+}
+
+/* Responses of SetPointValue */
+message Subscribe_SetPointValue_Responses {
+  sila2.org.silastandard.Real SetPointValue = 1;  /* The current SetPoint value of the Device */
+}
+
+/* Parameters for Get_FCPAffectedByMetadata_ChannelIndex */
+message Get_FCPAffectedByMetadata_ChannelIndex_Parameters {
+}
+
+/* Responses of Get_FCPAffectedByMetadata_ChannelIndex */
+message Get_FCPAffectedByMetadata_ChannelIndex_Responses {
+  repeated sila2.org.silastandard.String AffectedCalls = 1;  /* Fully qualified identifiers of all features, commands and properties affected by ChannelIndex */
+}
+
+/* The index of the channel that should be used. This value is 0-indexed, i.e. the first channel has index 0, the second one index 1 and so on. */
+message Metadata_ChannelIndex {
+  sila2.org.silastandard.Integer ChannelIndex = 1;  /* The index of the channel that should be used. This value is 0-indexed, i.e. the first channel has index 0, the second one index 1 and so on. */
+}

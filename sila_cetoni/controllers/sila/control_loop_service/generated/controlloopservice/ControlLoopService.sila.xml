@@ -38,9 +38,9 @@
           </DataType>
           <Constraints>
             <Unit>
-              <Label>&#194;&#176;C</Label>
+              <Label>°C</Label>
               <Factor>1</Factor>
-              <Offset>237.15</Offset>
+              <Offset>273.15</Offset>
               <UnitComponent>
                 <SIUnit>Kelvin</SIUnit>
                 <Exponent>1</Exponent>
@@ -85,9 +85,9 @@
         </DataType>
         <Constraints>
           <Unit>
-            <Label>&#194;&#176;C</Label>
+            <Label>°C</Label>
             <Factor>1</Factor>
-            <Offset>237.15</Offset>
+            <Offset>273.15</Offset>
             <UnitComponent>
               <SIUnit>Kelvin</SIUnit>
               <Exponent>1</Exponent>
@@ -109,9 +109,9 @@
         </DataType>
         <Constraints>
           <Unit>
-            <Label>&#194;&#176;C</Label>
+            <Label>°C</Label>
             <Factor>1</Factor>
-            <Offset>237.15</Offset>
+            <Offset>273.15</Offset>
             <UnitComponent>
               <SIUnit>Kelvin</SIUnit>
               <Exponent>1</Exponent>

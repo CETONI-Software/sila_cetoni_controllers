@@ -28,6 +28,6 @@ class Server(SilaServer):
             server_uuid=server_uuid,
         )
 
-        self.controlloopservice = ControlLoopServiceImpl(controller_channels, self.child_task_executor)
+        self.controlloopservice = ControlLoopServiceImpl(self, controller_channels, self.child_task_executor)
 
         self.set_feature_implementation(ControlLoopServiceFeature, self.controlloopservice)
