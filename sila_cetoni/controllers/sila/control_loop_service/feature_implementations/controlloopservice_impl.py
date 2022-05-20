@@ -86,7 +86,7 @@ class ControlLoopServiceImpl(ControlLoopServiceBase):
         return len(self.__controller_channels)
 
     def SetPointValue_on_subscription(self, *, metadata: MetadataDict) -> Optional[Queue[float]]:
-        channel_index = metadata.pop(self.__channel_index_identifier, 0)
+        channel_index = metadata.get(self.__channel_index_identifier, 0)
         try:
             if channel_index < 0:
                 raise IndexError
@@ -97,7 +97,7 @@ class ControlLoopServiceImpl(ControlLoopServiceBase):
             )
 
     def ControllerValue_on_subscription(self, *, metadata: MetadataDict) -> Optional[Queue[float]]:
-        channel_index = metadata.pop(self.__channel_index_identifier, 0)
+        channel_index = metadata.get(self.__channel_index_identifier, 0)
         try:
             return self.__controller_value_queues[channel_index]
         except IndexError:
@@ -114,12 +114,12 @@ class ControlLoopServiceImpl(ControlLoopServiceBase):
             )
 
     def WriteSetPoint(self, SetPointValue: float, *, metadata: MetadataDict) -> WriteSetPoint_Responses:
-        channel_identifier: int = metadata.pop(self.__channel_index_identifier, 0)
+        channel_identifier: int = metadata.get(self.__channel_index_identifier, 0)
         logger.debug(f"channel id: {channel_identifier}")
         self.__controller_channel_for_index(channel_identifier).write_setpoint(SetPointValue)
 
     def StopControlLoop(self, *, metadata: MetadataDict) -> StopControlLoop_Responses:
-        channel_identifier: int = metadata.pop(self.__channel_index_identifier, 0)
+        channel_identifier: int = metadata.get(self.__channel_index_identifier, 0)
         logger.debug(f"channel id: {channel_identifier}")
         self.__controller_channel_for_index(channel_identifier).enable_control_loop(False)
 
@@ -129,7 +129,7 @@ class ControlLoopServiceImpl(ControlLoopServiceBase):
         metadata: MetadataDict,
         instance: ObservableCommandInstance,
     ) -> RunControlLoop_Responses:
-        channel_identifier: int = metadata.pop(self.__channel_index_identifier, 0)
+        channel_identifier: int = metadata.get(self.__channel_index_identifier, 0)
         logger.debug(f"channel id: {channel_identifier}")
         self.__controller_channel_for_index(channel_identifier).enable_control_loop(True)
 
