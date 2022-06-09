@@ -35,7 +35,7 @@ class ControlLoopServiceImpl(ControlLoopServiceBase):
     def __init__(self, server: SilaServer, controller_channels: List[ControllerChannel], executor: Executor):
         super().__init__(server)
         self.__controller_channels = controller_channels
-        self.__channel_index_identifier = ControlLoopServiceFeature["ChannelIndex"].fully_qualified_identifier
+        self.__channel_index_identifier = ControlLoopServiceFeature["ChannelIndex"]
 
         self.__stop_event = Event()
 
@@ -140,11 +140,11 @@ class ControlLoopServiceImpl(ControlLoopServiceBase):
             return []
         else:
             return [
-                ControlLoopServiceFeature["WriteSetPoint"].fully_qualified_identifier,
-                ControlLoopServiceFeature["RunControlLoop"].fully_qualified_identifier,
-                ControlLoopServiceFeature["StopControlLoop"].fully_qualified_identifier,
-                ControlLoopServiceFeature["ControllerValue"].fully_qualified_identifier,
-                ControlLoopServiceFeature["SetPointValue"].fully_qualified_identifier,
+                ControlLoopServiceFeature["WriteSetPoint"],
+                ControlLoopServiceFeature["RunControlLoop"],
+                ControlLoopServiceFeature["StopControlLoop"],
+                ControlLoopServiceFeature["ControllerValue"],
+                ControlLoopServiceFeature["SetPointValue"],
             ]
 
     def stop(self) -> None:
