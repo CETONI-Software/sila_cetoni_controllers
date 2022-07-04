@@ -8,7 +8,7 @@ Run `python -m sila_cetoni_controllers --help` to receive a full list of availab
 ## Code generation
 - generate
   ```console
-  $ python -m sila2.code_generator new-package -n control_loop_service -o ./sila_cetoni/controllers/sila/ ./sila_cetoni/controllers/features/ControlLoopService.sila.xml
+  $ python -m sila2.code_generator new-package -n controllers_service -o ./sila_cetoni/controllers/sila/ ./sila_cetoni/controllers/features/ControlLoopService.sila.xml
   ```
 - update
   ```console
