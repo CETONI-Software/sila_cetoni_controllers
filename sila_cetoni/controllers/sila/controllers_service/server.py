@@ -4,6 +4,7 @@ from uuid import UUID
 from qmixsdk.qmixcontroller import ControllerChannel
 from sila2.server import SilaServer
 
+from ...device_drivers.abc import TemperatureControllerInterface
 from .feature_implementations.controlloopservice_impl import ControlLoopServiceImpl
 from .generated.controlloopservice import ControlLoopServiceFeature
 
