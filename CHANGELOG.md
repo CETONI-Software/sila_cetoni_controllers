@@ -18,6 +18,9 @@ Types of changes
 
 ## Unreleased
 
+
+## v1.1.0
+
 ### Changed
 - Rename *control_loop_service* to *controllers_service* to be more generic
 - Bump sila2 to v0.8.2
