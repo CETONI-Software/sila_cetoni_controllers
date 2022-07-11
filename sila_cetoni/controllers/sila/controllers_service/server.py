@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import List, Optional, Union
 from uuid import UUID
 
@@ -7,7 +9,6 @@ from sila2.server import SilaServer
 from ...device_drivers.abc import TemperatureControllerInterface
 from .feature_implementations.controlloopservice_impl import ControlLoopServiceImpl
 from .generated.controlloopservice import ControlLoopServiceFeature
-
 
 __version__ = "1.1.0"
 
