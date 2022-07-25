@@ -18,10 +18,14 @@ Types of changes
 
 ## Unreleased
 
+## v1.2.0
+
+Sync with sila_cetoni v1.2.0
 
 ## v1.1.0
 
 ### Changed
+
 - Rename *control_loop_service* to *controllers_service* to be more generic
 - Bump sila2 to v0.8.2
 
@@ -32,4 +36,5 @@ First release of sila_cetoni
 This is the controllers plugin which adds support for controlling CETONI controller devices via SiLA 2
 
 ### Added
+
 - ControlLoopService feature and feature implementation
