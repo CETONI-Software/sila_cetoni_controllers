@@ -9,7 +9,7 @@ from sila2.server import SilaServer
 from .feature_implementations.controlloopservice_impl import ControlLoopServiceImpl
 from .generated.controlloopservice import ControlLoopServiceFeature
 
-__version__ = "1.7.1"
+__version__ = "1.8.0"
 
 
 class Server(SilaServer):
