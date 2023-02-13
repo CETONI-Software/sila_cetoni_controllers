@@ -7,12 +7,15 @@ from typing import TYPE_CHECKING, Dict, Generic, List, Optional, TypeVar, Union,
 from qmixsdk import qmixcontroller
 
 from sila_cetoni.application.device import CetoniDevice, Device
+from sila_cetoni.utils import get_version
 
 from .sila.controllers_service.server import Server
 
 if TYPE_CHECKING:
     from sila_cetoni.application.application_configuration import ApplicationConfiguration
     from sila_cetoni.application.cetoni_device_configuration import CetoniDeviceConfiguration
+
+__version__ = get_version(__name__)
 
 logger = logging.getLogger(__name__)
 

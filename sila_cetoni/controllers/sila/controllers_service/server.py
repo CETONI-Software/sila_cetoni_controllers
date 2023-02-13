@@ -9,8 +9,6 @@ from sila2.server import SilaServer
 from .feature_implementations.controlloopservice_impl import ControlLoopServiceImpl
 from .generated.controlloopservice import ControlLoopServiceFeature
 
-__version__ = "1.8.0"
-
 
 class Server(SilaServer):
     def __init__(
@@ -23,6 +21,8 @@ class Server(SilaServer):
         server_vendor_url: str = "",
         server_uuid: Optional[Union[str, UUID]] = None,
     ):
+        from ... import __version__
+
         super().__init__(
             server_name=server_name or "Control Loop Service",
             server_type=server_type or "TestServer",
