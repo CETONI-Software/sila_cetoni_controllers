@@ -2,16 +2,15 @@
 from __future__ import annotations
 
 import logging
-import math
-import time
-from concurrent.futures import Executor
+from functools import partial
 from queue import Queue
-from threading import Event
-from typing import Any, Dict, List, Optional, Union, cast
+from typing import List, Optional, Union, cast
 
 from qmixsdk.qmixcontroller import ControllerChannel
 from sila2.framework import Command, Feature, FullyQualifiedIdentifier, Metadata, Property
 from sila2.server import MetadataDict, ObservableCommandInstance, SilaServer
+
+from sila_cetoni.utils import PropertyUpdater, not_close
 
 from ..generated.controlloopservice import (
     ControlLoopServiceBase,
@@ -30,57 +29,36 @@ class ControlLoopServiceImpl(ControlLoopServiceBase):
     __channel_index_identifier: Metadata[int]
     __set_point_queues: List[Queue[float]]  # same number of items and order as `__controller_channels`
     __controller_value_queues: List[Queue[float]]  # same number of items and order as `__controller_channels`
-    __stop_event: Event
 
-    def __init__(self, server: SilaServer, controller_channels: List[ControllerChannel], executor: Executor):
+    def __init__(self, server: SilaServer, controller_channels: List[ControllerChannel]):
         super().__init__(server)
         self.__controller_channels = controller_channels
         self.__channel_index_identifier = cast(Metadata, ControlLoopServiceFeature["ChannelIndex"])
 
-        self.__stop_event = Event()
-
         self.__set_point_queues = []
         self.__controller_value_queues = []
         for i in range(len(self.__controller_channels)):
-            self.__set_point_queues += [Queue()]
-            self.__controller_value_queues += [Queue()]
+            set_point_queue = Queue()
+            controller_value_queue = Queue()
 
-            # initial values
-            self.update_SetPointValue(
-                self.__controller_channels[i].get_setpoint(),
-                queue=self.__set_point_queues[i],
+            self.__set_point_queues += [set_point_queue]
+            self.__controller_value_queues += [controller_value_queue]
+
+            self.run_periodically(
+                PropertyUpdater(
+                    self.__controller_channels[i].get_setpoint,
+                    not_close,
+                    partial(self.update_SetPointValue, queue=set_point_queue),
+                )
             )
-            self.update_ControllerValue(
-                self.__controller_channels[i].read_actual_value(),
-                queue=self.__controller_value_queues[i],
+
+            self.run_periodically(
+                PropertyUpdater(
+                    self.__controller_channels[i].read_actual_value,
+                    not_close,
+                    partial(self.update_ControllerValue, queue=controller_value_queue),
+                )
             )
-
-            executor.submit(self.__make_set_point_updater(i), self.__stop_event)
-            executor.submit(self.__make_controller_value_updater(i), self.__stop_event)
-
-    def __make_set_point_updater(self, i: int):
-        def update_set_point(stop_event: Event):
-            new_set_point = set_point = self.__controller_channels[i].get_setpoint()
-            while not stop_event.is_set():
-                new_set_point = self.__controller_channels[i].get_setpoint()
-                if not math.isclose(new_set_point, set_point):
-                    set_point = new_set_point
-                    self.update_SetPointValue(set_point, queue=self.__set_point_queues[i])
-                time.sleep(0.1)
-
-        return update_set_point
-
-    def __make_controller_value_updater(self, i: int):
-        def update_set_point(stop_event: Event):
-            new_controller_value = controller_value = self.__controller_channels[i].read_actual_value()
-            while not stop_event.is_set():
-                new_controller_value = self.__controller_channels[i].read_actual_value()
-                if not math.isclose(new_controller_value, controller_value):
-                    controller_value = new_controller_value
-                    self.update_ControllerValue(controller_value, queue=self.__controller_value_queues[i])
-                time.sleep(0.1)
-
-        return update_set_point
 
     def get_NumberOfChannels(self, *, metadata: MetadataDict) -> int:
         return len(self.__controller_channels)
@@ -149,7 +127,3 @@ class ControlLoopServiceImpl(ControlLoopServiceBase):
                 cast(Command, ControlLoopServiceFeature["ControllerValue"]),
                 cast(Command, ControlLoopServiceFeature["SetPointValue"]),
             ]
-
-    def stop(self) -> None:
-        super().stop()
-        self.__stop_event.set()
