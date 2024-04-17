@@ -7,10 +7,10 @@ import time
 from concurrent.futures import Executor
 from queue import Queue
 from threading import Event
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, cast
 
 from qmixsdk.qmixcontroller import ControllerChannel
-from sila2.framework import Command, Feature, FullyQualifiedIdentifier, Property
+from sila2.framework import Command, Feature, FullyQualifiedIdentifier, Metadata, Property
 from sila2.server import MetadataDict, ObservableCommandInstance, SilaServer
 
 from ..generated.controlloopservice import (
@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 class ControlLoopServiceImpl(ControlLoopServiceBase):
     __controller_channels: List[ControllerChannel]
-    __channel_index_identifier: FullyQualifiedIdentifier
+    __channel_index_identifier: Metadata[int]
     __set_point_queues: List[Queue[float]]  # same number of items and order as `__controller_channels`
     __controller_value_queues: List[Queue[float]]  # same number of items and order as `__controller_channels`
     __stop_event: Event
@@ -35,7 +35,7 @@ class ControlLoopServiceImpl(ControlLoopServiceBase):
     def __init__(self, server: SilaServer, controller_channels: List[ControllerChannel], executor: Executor):
         super().__init__(server)
         self.__controller_channels = controller_channels
-        self.__channel_index_identifier = ControlLoopServiceFeature["ChannelIndex"]
+        self.__channel_index_identifier = cast(Metadata, ControlLoopServiceFeature["ChannelIndex"])
 
         self.__stop_event = Event()
 
@@ -117,11 +117,13 @@ class ControlLoopServiceImpl(ControlLoopServiceBase):
         channel_identifier: int = metadata.get(self.__channel_index_identifier, 0)
         logger.debug(f"channel id: {channel_identifier}")
         self.__controller_channel_for_index(channel_identifier).write_setpoint(SetPointValue)
+        return WriteSetPoint_Responses()
 
     def StopControlLoop(self, *, metadata: MetadataDict) -> StopControlLoop_Responses:
         channel_identifier: int = metadata.get(self.__channel_index_identifier, 0)
         logger.debug(f"channel id: {channel_identifier}")
         self.__controller_channel_for_index(channel_identifier).enable_control_loop(False)
+        return StopControlLoop_Responses()
 
     def RunControlLoop(
         self,
@@ -132,6 +134,7 @@ class ControlLoopServiceImpl(ControlLoopServiceBase):
         channel_identifier: int = metadata.get(self.__channel_index_identifier, 0)
         logger.debug(f"channel id: {channel_identifier}")
         self.__controller_channel_for_index(channel_identifier).enable_control_loop(True)
+        return RunControlLoop_Responses()
 
     def get_calls_affected_by_ChannelIndex(
         self,
@@ -140,11 +143,11 @@ class ControlLoopServiceImpl(ControlLoopServiceBase):
             return []
         else:
             return [
-                ControlLoopServiceFeature["WriteSetPoint"],
-                ControlLoopServiceFeature["RunControlLoop"],
-                ControlLoopServiceFeature["StopControlLoop"],
-                ControlLoopServiceFeature["ControllerValue"],
-                ControlLoopServiceFeature["SetPointValue"],
+                cast(Command, ControlLoopServiceFeature["WriteSetPoint"]),
+                cast(Command, ControlLoopServiceFeature["RunControlLoop"]),
+                cast(Command, ControlLoopServiceFeature["StopControlLoop"]),
+                cast(Command, ControlLoopServiceFeature["ControllerValue"]),
+                cast(Command, ControlLoopServiceFeature["SetPointValue"]),
             ]
 
     def stop(self) -> None:
